@@ -1,383 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Harshprabha — AI Engineer & ECE Student</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-  <!-- EmailJS SDK -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <style>
-    :root {
-      --bg:   #060810;
-      --bg2:  #0b0e18;
-      --card: rgba(255,255,255,0.028);
-      --glass-b: rgba(255,255,255,0.075);
-      --cyan:  #00e5ff;
-      --cyan-d: rgba(0,229,255,0.10);
-      --cyan-g: rgba(0,229,255,0.40);
-      --purp:  #7c3aed;
-      --purp-d:rgba(124,58,237,0.14);
-      --gold:  #f59e0b;
-      --t1: #eef2f7;
-      --t2: rgba(238,242,247,0.52);
-      --t3: rgba(238,242,247,0.28);
-      --ff: 'Syne', sans-serif;
-      --fb: 'DM Sans', sans-serif;
-      --fm: 'JetBrains Mono', monospace;
-      --r:  16px; --rs: 8px; --rl: 24px;
-      --ease: cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: var(--fb); background: var(--bg); color: var(--t1); overflow-x: hidden; cursor: none; }
-    ::selection { background: var(--cyan-d); color: var(--cyan); }
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
-
-    /* CURSOR */
-    #cur-ring {
-      position: fixed; top: 0; left: 0; width: 38px; height: 38px;
-      border: 1.5px solid var(--cyan); border-radius: 50%;
-      pointer-events: none; z-index: 9999;
-      transform: translate(-50%,-50%);
-      transition: width .35s var(--ease), height .35s var(--ease), background .3s, border-color .3s;
-      mix-blend-mode: screen;
-    }
-    #cur-dot {
-      position: fixed; top: 0; left: 0; width: 5px; height: 5px;
-      background: var(--cyan); border-radius: 50%; pointer-events: none;
-      z-index: 9999; transform: translate(-50%,-50%);
-      box-shadow: 0 0 10px var(--cyan);
-    }
-    body.ch #cur-ring { width: 60px; height: 60px; background: rgba(0,229,255,.06); border-color: rgba(0,229,255,.7); }
-    body.cm #cur-ring { width: 18px; height: 18px; background: var(--cyan-d); }
-
-    /* SCROLL PROGRESS */
-    #spb {
-      position: fixed; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--cyan), var(--purp));
-      transform-origin: left; transform: scaleX(0); z-index: 1000;
-      box-shadow: 0 0 14px var(--cyan-g); transition: transform .08s linear;
-    }
-
-    /* LOADER */
-    #loader {
-      position: fixed; inset: 0; background: var(--bg); z-index: 9998;
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; gap: 28px;
-      transition: opacity .7s var(--ease), transform .7s var(--ease);
-    }
-    #loader.gone { opacity: 0; transform: scale(1.04); pointer-events: none; }
-    .ld-brand { font-family: var(--ff); font-size: clamp(1.6rem,4vw,2.4rem); font-weight: 800; letter-spacing: -.03em; }
-    .ld-brand em { color: var(--cyan); font-style: normal; }
-    .ld-track { width: 220px; height: 2px; background: rgba(255,255,255,.07); border-radius: 2px; overflow: hidden; }
-    .ld-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--purp)); animation: ldBar 2s var(--ease) forwards; box-shadow: 0 0 14px var(--cyan-g); }
-    @keyframes ldBar { from{width:0} to{width:100%} }
-    .ld-txt { font-family: var(--fm); font-size: .7rem; color: var(--t3); letter-spacing: .18em; text-transform: uppercase; }
-
-    /* NAV */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 900;
-      padding: 0 clamp(20px,5vw,64px); height: 72px;
-      display: flex; align-items: center; justify-content: space-between;
-      transition: background .5s, backdrop-filter .5s, border-color .5s, box-shadow .5s;
-    }
-    nav.stuck {
-      background: rgba(6,8,16,.78);
-      backdrop-filter: blur(24px) saturate(200%);
-      -webkit-backdrop-filter: blur(24px) saturate(200%);
-      border-bottom: 1px solid var(--glass-b);
-      box-shadow: 0 4px 40px rgba(0,229,255,.04), 0 1px 0 rgba(255,255,255,.04);
-    }
-    .nl { font-family: var(--ff); font-size: 1.35rem; font-weight: 800; letter-spacing: -.04em; cursor: pointer; }
-    .nl em { color: var(--cyan); font-style: normal; }
-    .nlinks { display: flex; align-items: center; gap: 36px; }
-    .nlinks a { font-size: .82rem; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--t2); transition: color .3s; position: relative; }
-    .nlinks a::after { content:''; position: absolute; bottom: -5px; left: 0; right: 0; height: 1px; background: var(--cyan); transform: scaleX(0); transform-origin: right; transition: transform .35s var(--ease); }
-    .nlinks a:hover { color: var(--t1); }
-    .nlinks a:hover::after { transform: scaleX(1); transform-origin: left; }
-    .ncta { padding: 9px 22px !important; border: 1px solid var(--cyan) !important; border-radius: 40px !important; color: var(--cyan) !important; transition: background .3s, box-shadow .3s !important; }
-    .ncta::after { display: none !important; }
-    .ncta:hover { background: var(--cyan-d) !important; box-shadow: 0 0 28px var(--cyan-g) !important; }
-    .ham { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; z-index: 901; }
-    .ham span { width: 24px; height: 1.5px; background: var(--t2); border-radius: 2px; transition: all .3s; }
-    .ham.on span:nth-child(1){ transform: rotate(45deg) translate(4px,4px); }
-    .ham.on span:nth-child(2){ opacity: 0; }
-    .ham.on span:nth-child(3){ transform: rotate(-45deg) translate(4px,-4px); }
-    .mmenu { display: none; position: fixed; inset: 0; background: rgba(6,8,16,.97); backdrop-filter: blur(28px); z-index: 800; flex-direction: column; align-items: center; justify-content: center; gap: 36px; }
-    .mmenu.on { display: flex; }
-    .mmenu a { font-family: var(--ff); font-size: 2.2rem; font-weight: 800; color: var(--t2); transition: color .3s; }
-    .mmenu a:hover { color: var(--cyan); }
-
-    /* HERO */
-    .hero { position: relative; min-height: 100svh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .hvw { position: absolute; inset: 0; z-index: 0; }
-    .hvw video { width: 100%; height: 100%; object-fit: cover; opacity: .18; }
-    .hvw .vfb { position: absolute; inset: 0; background: linear-gradient(135deg, #060810 0%, #0a1628 50%, #060810 100%); z-index: -1; }
-    .hov { position: absolute; inset: 0; z-index: 1; background: radial-gradient(ellipse 70% 55% at 50% 40%, rgba(0,229,255,.07) 0%, transparent 70%), linear-gradient(180deg, rgba(6,8,16,.15) 0%, rgba(6,8,16,.45) 55%, rgba(6,8,16,.97) 100%); }
-    .hgrid { position: absolute; inset: 0; z-index: 1; background-image: linear-gradient(rgba(0,229,255,.024) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,.024) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, black 0%, transparent 100%); }
-    #hcanvas { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; }
-    .horb { position: absolute; border-radius: 50%; filter: blur(90px); z-index: 1; pointer-events: none; will-change: transform; }
-    .horb-a { width: 560px; height: 560px; background: radial-gradient(circle, rgba(0,229,255,.09) 0%, transparent 70%); top: -140px; right: -100px; animation: ob1 9s ease-in-out infinite; }
-    .horb-b { width: 460px; height: 460px; background: radial-gradient(circle, rgba(124,58,237,.11) 0%, transparent 70%); bottom: 60px; left: -80px; animation: ob2 11s ease-in-out infinite; }
-    @keyframes ob1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-28px,32px)} }
-    @keyframes ob2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(22px,-22px)} }
-    .hcon { position: relative; z-index: 2; text-align: center; width: 100%; max-width: 100%; padding: 0 clamp(24px,6vw,80px); padding-top: 80px; }
-    .hbadge { display: inline-flex; align-items: center; gap: 9px; padding: 7px 18px; background: rgba(0,229,255,.06); border: 1px solid rgba(0,229,255,.22); border-radius: 40px; font-family: var(--fm); font-size: .72rem; color: var(--cyan); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 28px; opacity: 0; transform: translateY(20px); animation: fu .8s .3s var(--ease) forwards; }
-    .hbadge::before { content: ''; width: 6px; height: 6px; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 8px var(--cyan); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
-    .hh { font-family: var(--ff); font-weight: 800; line-height: 1.0; letter-spacing: -.04em; margin-bottom: 20px; opacity: 0; transform: translateY(32px); animation: fu .9s .5s var(--ease) forwards; font-size: clamp(2.4rem, min(7vw, 5.5vh), 6rem); word-break: break-word; overflow-wrap: break-word; }
-    .hh .l1 { display: block; color: var(--t1); }
-    .hh .l2 { display: block; background: linear-gradient(120deg, var(--cyan) 0%, #a78bfa 55%, var(--cyan) 100%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gs 5s linear infinite; }
-    @keyframes gs { to { background-position: 200% center; } }
-    .htyped { font-family: var(--ff); font-size: clamp(1.3rem,3.2vw,2.1rem); font-weight: 600; color: var(--t2); margin-bottom: 24px; height: 2.4em; display: flex; align-items: center; justify-content: center; gap: 7px; opacity: 0; animation: fu .9s .7s var(--ease) forwards; }
-    #tout { color: var(--t1); }
-    .cb { color: var(--cyan); animation: blink 1s infinite; font-weight: 300; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-    .hsub { font-size: clamp(.95rem,1.8vw,1.12rem); color: var(--t2); font-weight: 300; line-height: 1.8; max-width: 580px; margin: 0 auto 44px; opacity: 0; animation: fu .9s .9s var(--ease) forwards; }
-    .bwrap { opacity: 0; animation: fu .9s 1.1s var(--ease) forwards; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
-    .bp, .bg { display: inline-flex; align-items: center; gap: 8px; font-family: var(--ff); font-size: .9rem; font-weight: 700; border-radius: 40px; cursor: pointer; letter-spacing: .02em; border: none; position: relative; overflow: hidden; }
-    .bp { padding: 14px 34px; background: var(--cyan); color: #060810; transition: box-shadow .25s; }
-    .bg { padding: 13px 34px; background: transparent; color: var(--t1); border: 1px solid var(--glass-b); transition: background .3s, border-color .3s; }
-    .bp::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,.16); transform: translateX(-110%) skewX(-20deg); transition: transform .5s var(--ease); }
-    .bp:hover::before { transform: translateX(110%) skewX(-20deg); }
-    .bp:hover { box-shadow: 0 8px 44px var(--cyan-g); }
-    .bg:hover { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.18); }
-    .hsc { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 52px; opacity: 0; animation: fu .9s 1.3s var(--ease) forwards; }
-    .sl { width: 42px; height: 42px; border: 1px solid var(--glass-b); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--t2); transition: border-color .3s, color .3s, background .3s, transform .3s var(--ease), box-shadow .3s; }
-    .sl:hover { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-d); transform: translateY(-5px); box-shadow: 0 10px 28px rgba(0,229,255,.2); }
-    .hscroll { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fu .9s 1.5s var(--ease) forwards; }
-    .scl { font-family: var(--fm); font-size: .63rem; letter-spacing: .22em; color: var(--t3); text-transform: uppercase; }
-    .scln { width: 1px; height: 52px; background: linear-gradient(to bottom, var(--cyan), transparent); animation: scl 2.2s ease-in-out infinite; }
-    @keyframes scl { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
-    @keyframes fu { to { opacity: 1; transform: none; } }
-
-    /* SHARED */
-    section { padding: clamp(80px,10vw,140px) clamp(20px,5vw,80px); }
-    .mw { max-width: 1200px; margin: 0 auto; }
-    .stag { display: inline-flex; align-items: center; gap: 10px; font-family: var(--fm); font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; }
-    .stag::before { content: ''; width: 22px; height: 1px; background: var(--cyan); }
-    .sh { font-family: var(--ff); font-size: clamp(2rem,5vw,3.6rem); font-weight: 800; letter-spacing: -.04em; line-height: 1.08; margin-bottom: 14px; }
-    .sh em { color: var(--cyan); font-style: normal; }
-    .ss { font-size: 1rem; color: var(--t2); font-weight: 300; max-width: 540px; line-height: 1.75; }
-    .tc { text-align: center; }
-    .tc .stag { justify-content: center; }
-    .tc .ss { margin: 0 auto; }
-    .rv   { opacity: 0; transform: translateY(40px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
-    .rvl  { opacity: 0; transform: translateX(-40px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
-    .rvr  { opacity: 0; transform: translateX(40px);  transition: opacity .9s var(--ease), transform .9s var(--ease); }
-    .rv.vs, .rvl.vs, .rvr.vs { opacity: 1; transform: none; }
-    .sd { transition-delay: calc(var(--i,0) * .14s); }
-
-    /* ABOUT */
-    .about { background: var(--bg2); position: relative; overflow: hidden; }
-    .about::before { content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(124,58,237,.07) 0%, transparent 70%); pointer-events: none; }
-    .agrid { display: grid; grid-template-columns: 1fr 1.5fr; gap: clamp(40px,7vw,90px); align-items: center; margin-top: 64px; }
-    .afw { position: relative; }
-    .afr { position: relative; border-radius: var(--rl); overflow: hidden; aspect-ratio: 3/4; max-width: 380px; }
-    .afr img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
-    .afr:hover img { transform: scale(1.06); }
-    .afr::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(6,8,16,.75) 0%, transparent 55%); }
-    .abadge { position: absolute; bottom: 22px; left: 22px; right: 22px; z-index: 2; background: rgba(6,8,16,.65); backdrop-filter: blur(14px); border: 1px solid var(--glass-b); border-radius: var(--r); padding: 16px 20px; }
-    .abn { font-family: var(--ff); font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
-    .abr { font-size: .8rem; color: var(--cyan); font-family: var(--fm); }
-    .adco1 { position: absolute; top: -18px; right: -18px; width: 90px; height: 90px; border: 1px solid rgba(0,229,255,.2); border-radius: 50%; }
-    .adco2 { position: absolute; bottom: 60px; right: -36px; width: 55px; height: 55px; border: 1px solid rgba(124,58,237,.3); border-radius: 50%; }
-    .atxt { display: flex; flex-direction: column; gap: 28px; }
-    .ai { font-size: clamp(1rem,1.8vw,1.18rem); line-height: 1.8; color: var(--t2); font-weight: 300; }
-    .ai strong { color: var(--t1); font-weight: 500; }
-    .astats { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
-    .scard { background: var(--card); border: 1px solid var(--glass-b); border-radius: var(--r); padding: 20px 16px; transition: border-color .3s, background .3s, transform .35s var(--ease); text-align: center; }
-    .scard:hover { border-color: rgba(0,229,255,.3); background: var(--cyan-d); transform: translateY(-5px); }
-    .snum { font-family: var(--ff); font-size: 2rem; font-weight: 800; color: var(--cyan); letter-spacing: -.04em; line-height: 1; margin-bottom: 5px; }
-    .slbl { font-size: .76rem; color: var(--t3); letter-spacing: .05em; }
-    .atags { display: flex; flex-wrap: wrap; gap: 10px; }
-    .atag { padding: 6px 14px; background: var(--card); border: 1px solid var(--glass-b); border-radius: 40px; font-size: .8rem; color: var(--t2); font-family: var(--fm); transition: background .3s, border-color .3s, color .3s; }
-    .atag:hover { background: var(--cyan-d); border-color: rgba(0,229,255,.3); color: var(--cyan); }
-
-    /* SKILLS */
-    .skills { position: relative; overflow: hidden; }
-    .skills::before { content: ''; position: absolute; bottom: -200px; left: -180px; width: 580px; height: 580px; border-radius: 50%; background: radial-gradient(circle, rgba(0,229,255,.05) 0%, transparent 70%); pointer-events: none; }
-    .skwrap { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: stretch; margin-top: 64px; }
-    .skcats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; align-content: start; }
-    .skcat { background: var(--card); border: 1px solid var(--glass-b); border-radius: var(--rl); padding: 28px 26px; width: 100%; transition: border-color .3s, transform .4s var(--ease), box-shadow .4s; position: relative; overflow: hidden; }
-    .skcat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); opacity: 0; transition: opacity .3s; }
-    .skcat:hover { border-color: rgba(0,229,255,.22); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.4); }
-    .skcat:hover::before { opacity: 1; }
-    .skch { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-    .skci { font-size: 1.25rem; }
-    .skct { font-family: var(--ff); font-size: 1.02rem; font-weight: 700; }
-    .skcs { display: flex; flex-wrap: wrap; gap: 10px; }
-    .skcp { padding: 7px 15px; background: rgba(255,255,255,.04); border: 1px solid var(--glass-b); border-radius: 40px; font-size: .8rem; color: var(--t2); font-family: var(--fm); transition: background .3s, border-color .3s, color .3s; }
-    .skcp:hover { background: var(--cyan-d); border-color: rgba(0,229,255,.3); color: var(--cyan); }
-    .tgwrap { width: 100%; overflow: hidden; display: flex; flex-direction: column; gap: 0; background: var(--card); border: 1px solid var(--glass-b); border-radius: var(--rl); padding: 28px 0 28px; }
-    .tgt-inner { padding: 0 28px; }
-    .tgt { font-family: var(--ff); font-size: 1rem; font-weight: 700; margin-bottom: 20px; color: var(--t2); display: flex; align-items: center; gap: 10px; }
-    .tgt::before { content: ""; width: 22px; height: 1px; background: var(--cyan); }
-    .tgt::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--glass-b), transparent); }
-
-    /* Marquee track */
-    .mq-track {
-      overflow: hidden; position: relative; padding: 8px 0;
-      mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
-      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
-    }
-    .mq-row { display: flex; gap: 14px; width: max-content; }
-    .mq-left  { animation: mqLeft  28s linear infinite; }
-    .mq-right { animation: mqRight 32s linear infinite; }
-    .mq-left3 { animation: mqLeft  36s linear infinite; }
-    .mq-track:hover .mq-left,
-    .mq-track:hover .mq-right { animation-play-state: paused; }
-    @keyframes mqLeft  { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    @keyframes mqRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
-
-    .tc2 {
-      background: var(--card); border: 1px solid var(--glass-b); border-radius: var(--r);
-      padding: 20px 18px; display: flex; flex-direction: column; align-items: center; gap: 10px;
-      min-width: 90px; flex-shrink: 0;
-      transition: border-color .3s, background .3s, transform .35s var(--ease), box-shadow .35s;
-      cursor: default; position: relative; overflow: hidden;
-      animation: tcFloat 3.5s ease-in-out infinite var(--td, 0s);
-    }
-    .mq-track:hover .tc2 { animation-play-state: paused; }
-    @keyframes tcFloat { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-5px); } }
-    .tc2::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, var(--tcg, rgba(0,229,255,.08)) 0%, transparent 70%); opacity: 0; transition: opacity .4s; }
-    .tc2:hover { border-color: var(--tcb, rgba(0,229,255,.35)); transform: translateY(-8px) scale(1.12) !important; box-shadow: 0 16px 44px rgba(0,0,0,.5), 0 0 32px var(--tcg, rgba(0,229,255,.18)); animation-play-state: paused; z-index: 10; }
-    .tc2:hover::before { opacity: 1; }
-    .tcl { font-size: 2rem; line-height: 1; position: relative; z-index: 1; transition: transform .3s var(--ease); }
-    .tc2:hover .tcl { transform: scale(1.2) rotate(-5deg); }
-    .tcn { font-family: var(--fm); font-size: .7rem; color: var(--t3); letter-spacing: .1em; text-align: center; position: relative; z-index: 1; transition: color .3s; }
-    .tc2:hover .tcn { color: var(--t2); }
-
-    /* PROJECTS */
-    .projects { background: var(--bg2); position: relative; overflow: hidden; }
-    .pgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px,1fr)); gap: 28px; margin-top: 64px; }
-    .pcard { background: var(--card); border: 1px solid var(--glass-b); border-radius: var(--rl); overflow: hidden; transition: border-color .3s, box-shadow .4s; transform-style: preserve-3d; will-change: transform; }
-    .pcard:hover { border-color: rgba(0,229,255,.25); box-shadow: 0 30px 80px rgba(0,0,0,.55), 0 0 40px rgba(0,229,255,.07); }
-    .pimg { position: relative; overflow: hidden; aspect-ratio: 16/9; }
-    .pimg img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
-    .pcard:hover .pimg img { transform: scale(1.08); }
-    .pov { position: absolute; inset: 0; background: rgba(0,229,255,.07); backdrop-filter: blur(3px); display: flex; align-items: center; justify-content: center; gap: 12px; opacity: 0; transition: opacity .4s; }
-    .pcard:hover .pov { opacity: 1; }
-    .ob { padding: 10px 22px; border-radius: 40px; font-size: .82rem; font-weight: 700; font-family: var(--ff); cursor: pointer; transition: transform .25s, box-shadow .25s; }
-    .obp { background: var(--cyan); color: #060810; border: none; }
-    .obg { background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.22); }
-    .ob:hover { transform: scale(1.07); box-shadow: 0 6px 20px rgba(0,229,255,.3); }
-    .pbody { padding: 24px; }
-    .ptags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-    .ptag { padding: 4px 10px; background: var(--cyan-d); border: 1px solid rgba(0,229,255,.2); border-radius: 40px; font-size: .7rem; color: var(--cyan); font-family: var(--fm); }
-    .ptitle { font-family: var(--ff); font-size: 1.3rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: 10px; }
-    .pdesc { font-size: .9rem; color: var(--t2); line-height: 1.7; margin-bottom: 20px; font-weight: 300; }
-    .plinks { display: flex; gap: 14px; }
-    .plink { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; font-weight: 600; color: var(--t2); transition: color .3s; font-family: var(--fm); }
-    .plink:hover { color: var(--cyan); }
-    .plink svg { transition: transform .3s; }
-    .plink:hover svg { transform: translate(2px,-2px); }
-
-    /* EXPERIENCE */
-    .experience { position: relative; }
-    .tline { position: relative; max-width: 780px; margin: 64px auto 0; }
-    .tline::before { content: ''; position: absolute; left: 22px; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, transparent, var(--cyan), var(--purp), transparent); }
-    .tli { display: flex; gap: 40px; padding-bottom: 52px; padding-left: 14px; }
-    .tldw { position: relative; flex-shrink: 0; width: 16px; margin-top: 6px; }
-    .tld { width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 2px solid var(--cyan); z-index: 1; position: relative; transition: background .3s, box-shadow .3s; }
-    .tli:hover .tld { background: var(--cyan); box-shadow: 0 0 18px var(--cyan-g); }
-    .tlc { background: var(--card); border: 1px solid var(--glass-b); border-radius: var(--rl); padding: 24px 28px; flex: 1; transition: border-color .3s, transform .4s var(--ease); }
-    .tli:hover .tlc { border-color: rgba(0,229,255,.22); transform: translateX(8px); }
-    .tldate { font-family: var(--fm); font-size: .73rem; color: var(--cyan); letter-spacing: .1em; margin-bottom: 8px; text-transform: uppercase; }
-    .tltitle { font-family: var(--ff); font-size: 1.18rem; font-weight: 700; margin-bottom: 4px; }
-    .tlorg { font-size: .88rem; color: #a78bfa; font-weight: 500; margin-bottom: 12px; }
-    .tldesc { font-size: .9rem; color: var(--t2); line-height: 1.7; font-weight: 300; }
-
-    /* ACHIEVEMENTS */
-    .ach { background: var(--bg2); }
-    .achg { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 24px; margin-top: 64px; }
-    .acard { background: var(--card); border: 1px solid var(--glass-b); border-radius: var(--rl); padding: 32px 26px; text-align: center; transition: transform .4s var(--ease), border-color .3s, box-shadow .4s; position: relative; overflow: hidden; }
-    .acard::before { content: ''; position: absolute; top: -60px; left: -60px; width: 200px; height: 200px; border-radius: 50%; opacity: 0; transition: opacity .4s; }
-    .acard.gd::before { background: radial-gradient(circle, rgba(245,158,11,.14) 0%, transparent 70%); }
-    .acard.cy::before { background: radial-gradient(circle, rgba(0,229,255,.13) 0%, transparent 70%); }
-    .acard.pu::before { background: radial-gradient(circle, rgba(124,58,237,.14) 0%, transparent 70%); }
-    .acard:hover::before { opacity: 1; }
-    .acard:hover { transform: translateY(-9px); }
-    .acard.gd:hover { border-color: rgba(245,158,11,.45); box-shadow: 0 22px 60px rgba(245,158,11,.1); }
-    .acard.cy:hover { border-color: rgba(0,229,255,.35); box-shadow: 0 22px 60px rgba(0,229,255,.1); }
-    .acard.pu:hover { border-color: rgba(124,58,237,.45); box-shadow: 0 22px 60px rgba(124,58,237,.1); }
-    .aico { font-size: 2.8rem; margin-bottom: 16px; display: block; }
-    .atit { font-family: var(--ff); font-size: 1.18rem; font-weight: 700; margin-bottom: 10px; }
-    .acard.gd .atit { color: var(--gold); }
-    .acard.cy .atit { color: var(--cyan); }
-    .acard.pu .atit { color: #a78bfa; }
-    .adesc { font-size: .88rem; color: var(--t2); line-height: 1.7; font-weight: 300; }
-    .abdg { display: inline-block; margin-top: 16px; padding: 5px 14px; border-radius: 40px; font-size: .73rem; font-family: var(--fm); }
-    .acard.gd .abdg { background: rgba(245,158,11,.1); color: var(--gold); border: 1px solid rgba(245,158,11,.3); }
-    .acard.cy .abdg { background: var(--cyan-d); color: var(--cyan); border: 1px solid rgba(0,229,255,.3); }
-    .acard.pu .abdg { background: var(--purp-d); color: #a78bfa; border: 1px solid rgba(124,58,237,.3); }
-
-    /* CONTACT */
-    .contact { position: relative; overflow: hidden; }
-    .contact::before { content: ''; position: absolute; top: -200px; right: -100px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(0,229,255,.06) 0%, transparent 70%); pointer-events: none; }
-    .cgrid { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(40px,6vw,80px); align-items: start; max-width: 1000px; margin: 64px auto 0; }
-    .cinfo { display: flex; flex-direction: column; gap: 28px; }
-    .cdet { display: flex; align-items: center; gap: 16px; }
-    .cico { width: 44px; height: 44px; background: var(--card); border: 1px solid var(--glass-b); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; transition: border-color .3s, background .3s; }
-    .cdet:hover .cico { border-color: rgba(0,229,255,.3); background: var(--cyan-d); }
-    .cll { font-size: .73rem; color: var(--t3); text-transform: uppercase; letter-spacing: .1em; font-family: var(--fm); }
-    .clv { font-size: .95rem; font-weight: 500; }
-    .csoc { display: flex; gap: 12px; flex-wrap: wrap; }
-    .cform { background: var(--card); border: 1px solid var(--glass-b); border-radius: var(--rl); padding: clamp(24px,4vw,36px); display: flex; flex-direction: column; gap: 20px; }
-    .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .fg { display: flex; flex-direction: column; gap: 8px; }
-    .fl { font-size: .75rem; color: var(--t3); letter-spacing: .1em; text-transform: uppercase; font-family: var(--fm); }
-    .fi, .fta { background: rgba(255,255,255,.04); border: 1px solid var(--glass-b); border-radius: var(--rs); padding: 12px 16px; color: var(--t1); font-family: var(--fb); font-size: .92rem; outline: none; width: 100%; transition: border-color .3s, background .3s, box-shadow .3s; }
-    .fi:focus, .fta:focus { border-color: var(--cyan); background: rgba(0,229,255,.04); box-shadow: 0 0 0 3px rgba(0,229,255,.08); }
-    .fi::placeholder, .fta::placeholder { color: var(--t3); }
-    .fta { resize: vertical; min-height: 120px; }
-    .fsub { width: 100%; padding: 15px; background: var(--cyan); color: #060810; border: none; border-radius: 40px; font-family: var(--ff); font-size: .95rem; font-weight: 800; cursor: pointer; transition: transform .25s var(--ease), box-shadow .25s, background .3s; letter-spacing: .02em; }
-    .fsub:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 36px var(--cyan-g); }
-    .fsub:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-    /* form status messages */
-    .fstatus { font-family: var(--fm); font-size: .8rem; text-align: center; padding: 10px 16px; border-radius: var(--rs); display: none; }
-    .fstatus.ok { display: block; background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.3); color: #4ade80; }
-    .fstatus.err { display: block; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.25); color: #f87171; }
-
-    /* FOOTER */
-    footer { padding: 44px clamp(20px,5vw,80px); border-top: 1px solid var(--glass-b); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
-    .fbrand { font-family: var(--ff); font-size: 1.1rem; font-weight: 800; }
-    .fbrand em { color: var(--cyan); font-style: normal; }
-    .fcopy { font-size: .8rem; color: var(--t3); }
-    .flinks { display: flex; gap: 24px; }
-    .flinks a { font-size: .8rem; color: var(--t3); transition: color .3s; }
-    .flinks a:hover { color: var(--cyan); }
-
-    /* NOISE + PARTICLES */
-    .noise { position: fixed; inset: 0; pointer-events: none; z-index: 998; opacity: .022; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-    #ptcl { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-    .ptcl { position: absolute; width: 2px; height: 2px; background: var(--cyan); border-radius: 50%; opacity: 0; animation: ptup linear infinite; }
-    @keyframes ptup { 0%{transform:translateY(100vh);opacity:0} 10%{opacity:.25} 90%{opacity:.08} 100%{transform:translateY(-100px) translateX(60px);opacity:0} }
-
-    /* RESPONSIVE */
-    @media(max-width:920px){
-      .nlinks { display:none; }
-      .ham { display:flex; }
-      .agrid { grid-template-columns:1fr; }
-      .afr { max-width:100%; aspect-ratio:4/3; }
-      .skwrap { grid-template-columns:1fr; }
-      .tline::before { left:8px; }
-      .tli { padding-left:0; gap:18px; }
-      .tld { width:10px; height:10px; }
-      .cgrid { grid-template-columns:1fr; }
-      .frow { grid-template-columns:1fr; }
-      footer { flex-direction:column; text-align:center; }
-    }
-    @media(max-width:600px){
-      .astats { grid-template-columns:1fr 1fr; }
-      .pgrid { grid-template-columns:1fr; }
-      .achg { grid-template-columns:1fr; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Harshprabha — AI Engineer & ECE Student</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -389,9 +20,9 @@
 
 <!-- LOADER -->
 <div id="loader">
-  <div class="ld-brand">Harshprabha<em>.</em>dev</div>
+  <div class="ld-brand">Harshprabha<em>.</em></div>
   <div class="ld-track"><div class="ld-fill"></div></div>
-  <div class="ld-txt">Initializing systems...</div>
+  <div class="ld-txt">Loading portfolio...</div>
 </div>
 
 <!-- NAV -->
@@ -417,20 +48,15 @@
 
 <!-- HERO -->
 <section class="hero" id="home">
-  <div class="hvw">
-    <div class="vfb"></div>
-    <video autoplay muted loop playsinline preload="auto">
-      <source src="https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_25fps.mp4" type="video/mp4">
-    </video>
-  </div>
-  <div class="hov"></div>
+  <div class="hbg"></div>
   <div class="hgrid"></div>
   <canvas id="hcanvas"></canvas>
   <div class="horb horb-a"></div>
   <div class="horb horb-b"></div>
+  <div class="horb horb-c"></div>
 
   <div class="hcon">
-    <div class="hbadge"><span>Open to Research Opportunities</span></div>
+    <div class="hbadge">Open to Research &amp; Internship Opportunities</div>
     <h1 class="hh">
       <span class="l1">Harshprabha</span>
       <span class="l2">Engineering Intelligence</span>
@@ -439,27 +65,27 @@
       <span id="tout"></span><span class="cb">_</span>
     </div>
     <p class="hsub">
-      First-year ECE (AI) student at IGDTUW Delhi — building NLP systems, financial AI pipelines, and research-driven applications. Research-backed. Production-minded.
+      ECE (AI) student at IGDTUW Delhi — building LLM evaluation frameworks, financial NLP pipelines, and research-driven AI systems. Agentic. Production-minded.
     </p>
     <div class="bwrap">
       <a href="#projects" class="bp magbtn">
-        <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
         View Projects
       </a>
-      <a href="#contact" class="bg magbtn">
-        <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      <a href="#contact" class="bg2 magbtn">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
         Get in Touch
       </a>
     </div>
     <div class="hsc">
       <a href="https://github.com/SoftSage07" target="_blank" class="sl" aria-label="GitHub">
-        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        <svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
       </a>
       <a href="https://www.linkedin.com/in/harshprabha-30b87b376/" target="_blank" class="sl" aria-label="LinkedIn">
-        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        <svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
       </a>
       <a href="mailto:harshprabha95@gmail.com" class="sl" aria-label="Email">
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
       </a>
     </div>
   </div>
@@ -474,13 +100,13 @@
   <div class="mw">
     <div class="rv">
       <div class="stag">Who I Am</div>
-      <h2 class="sh">Building the Future,<br><em>One System at a Time</em></h2>
+      <h2 class="sh">Building Systems,<br><em>Researching Boundaries</em></h2>
     </div>
     <div class="agrid">
       <div class="rvl">
         <div class="afw">
           <div class="afr">
-            <img src="https://picsum.photos/seed/aitech2024/600/800" alt="Tech workspace" loading="lazy"/>
+            <img src="Harsha-Profile.jpeg" alt="Harshprabha" loading="lazy"/>
             <div class="abadge">
               <div class="abn">Harshprabha</div>
               <div class="abr">NLP Researcher · AI Engineer</div>
@@ -491,11 +117,11 @@
         </div>
       </div>
       <div class="atxt rvr">
-        <p class="ai">I'm a <strong>first-year ECE (AI) student</strong> at IGDTUW, Delhi with a focus on <strong>NLP and machine learning systems</strong>. I build end-to-end AI pipelines — from data ingestion and model fine-tuning to production deployment.</p>
-        <p class="ai">Currently pursuing research opportunities in <strong>NLP and LLMs</strong>. Active as a Tech Coordinator at IEEE IGDTUW and Research Coordinator at E-Cell, where I author weekly analytical newsletters on emerging tech trends.</p>
+        <p class="ai">I'm a <strong>first-year ECE (AI) student</strong> at IGDTUW, Delhi with a focus on <strong>NLP, LLMs, and agentic systems</strong>. I build end-to-end AI pipelines — from LLM evaluation frameworks and sentiment classification to full-stack deployment.</p>
+        <p class="ai">Currently pursuing research opportunities in <strong>NLP and AI governance</strong>. Active as Tech Coordinator at IEEE IGDTUW, Chapter Lead at Youth Economy Lab, and Research Coordinator at E-Cell, where I author weekly analytical newsletters on emerging tech.</p>
         <div class="astats">
           <div class="scard sd" style="--i:0">
-            <div class="snum" data-target="2" data-suffix="+">0</div>
+            <div class="snum" data-target="3" data-suffix="+">0</div>
             <div class="slbl">Live Projects</div>
           </div>
           <div class="scard sd" style="--i:1">
@@ -507,14 +133,18 @@
             <div class="slbl">CGPA Sem 1</div>
           </div>
         </div>
+        <div class="ri-blk">
+          <h4>Research Interest</h4>
+          <p>Intersection of AI systems and public policy — data protection, generative AI governance, and AI cybersecurity risk. Focused on how technical realities of LLMs (hallucination, bias, adversarial vulnerability) translate into regulatory frameworks, particularly in the South Asian context.</p>
+        </div>
         <div class="atags">
           <span class="atag">NLP / LLMs</span>
-          <span class="atag">PyTorch</span>
+          <span class="atag">Agentic AI</span>
           <span class="atag">FinBERT</span>
+          <span class="atag">Prompt Engineering</span>
+          <span class="atag">AI Governance</span>
           <span class="atag">IEEE IGDTUW</span>
-          <span class="atag">Research</span>
-          <span class="atag">Hackathons</span>
-          <span class="atag">Delhi, India</span>
+          <span class="atag">Open Source</span>
           <span class="atag">IGDTUW '29</span>
         </div>
       </div>
@@ -528,82 +158,75 @@
     <div class="tc rv">
       <div class="stag">Capabilities</div>
       <h2 class="sh">Technical <em>Arsenal</em></h2>
-      <p class="ss">A growing stack across NLP, ML systems, and full-stack development — grounded in strong fundamentals.</p>
+      <p class="ss">A growing stack across NLP, agentic AI, and full-stack development — grounded in strong fundamentals.</p>
     </div>
     <div class="skwrap">
       <div class="skcats">
         <div class="skcat rv sd" style="--i:0;grid-column:1/-1">
-          <div class="skch"><span class="skci">🧠</span><span class="skct">Machine Learning & NLP</span></div>
-          <div class="skcs"><span class="skcp">PyTorch</span><span class="skcp">FinBERT</span><span class="skcp">HuggingFace</span><span class="skcp">Sentiment Analysis</span><span class="skcp">Feature Engineering</span></div>
+          <div class="skch"><span class="skci">🧠</span><span class="skct">AI / ML & NLP</span></div>
+          <div class="skcs"><span class="skcp">PyTorch</span><span class="skcp">FinBERT</span><span class="skcp">HuggingFace</span><span class="skcp">Sentiment Analysis</span><span class="skcp">NumPy</span><span class="skcp">Pandas</span></div>
         </div>
-        <div class="skcat rv sd" style="--i:1">
+        <div class="skcat rv sd" style="--i:1;grid-column:1/-1">
+          <div class="skch"><span class="skci">⚡</span><span class="skct">LLM & Agentic Systems</span></div>
+          <div class="skcs"><span class="skcp">Prompt Engineering</span><span class="skcp">Chain-of-Thought</span><span class="skcp">Agentic Workflows</span><span class="skcp">LLM Orchestration</span><span class="skcp">Groq (LLaMA 3.1)</span><span class="skcp">Claude API</span></div>
+        </div>
+        <div class="skcat rv sd" style="--i:2">
           <div class="skch"><span class="skci">⌨️</span><span class="skct">Languages</span></div>
           <div class="skcs"><span class="skcp">Python</span><span class="skcp">JavaScript</span><span class="skcp">Java</span></div>
         </div>
-        <div class="skcat rv sd" style="--i:2">
-          <div class="skch"><span class="skci">🌐</span><span class="skct">Web & Data</span></div>
-          <div class="skcs"><span class="skcp">HTML5</span><span class="skcp">CSS3</span><span class="skcp">Firebase</span><span class="skcp">Pandas</span><span class="skcp">NumPy</span><span class="skcp">REST APIs</span></div>
-        </div>
         <div class="skcat rv sd" style="--i:3">
-          <div class="skch"><span class="skci">🔧</span><span class="skct">Tools & Cloud</span></div>
-          <div class="skcs"><span class="skcp">Git</span><span class="skcp">GitHub</span><span class="skcp">Google Cloud</span><span class="skcp">Streamlit</span><span class="skcp">VS Code</span></div>
+          <div class="skch"><span class="skci">🌐</span><span class="skct">Web & Tools</span></div>
+          <div class="skcs"><span class="skcp">HTML5</span><span class="skcp">CSS3</span><span class="skcp">REST APIs</span><span class="skcp">Web Scraping</span><span class="skcp">Firebase</span><span class="skcp">Git</span><span class="skcp">Streamlit</span><span class="skcp">Google Cloud</span></div>
         </div>
       </div>
       <div class="tgwrap rvr">
         <div class="tgt-inner"><p class="tgt">Technologies I work with</p></div>
-
-        <!-- Marquee row 1 — scrolls left -->
         <div class="mq-track">
-          <div class="mq-row mq-left" id="mq1">
-            <div class="tc2" style="--tcb:rgba(52,211,153,.5);--tcg:rgba(52,211,153,.1);--td:0s"><div class="tcl">🐍</div><div class="tcn">Python</div></div>
-            <div class="tc2" style="--tcb:rgba(0,229,255,.5);--tcg:rgba(0,229,255,.12);--td:.15s"><div class="tcl">🤗</div><div class="tcn">HuggingFace</div></div>
-            <div class="tc2" style="--tcb:rgba(239,68,68,.5);--tcg:rgba(239,68,68,.1);--td:.3s"><div class="tcl">🔥</div><div class="tcn">PyTorch</div></div>
-            <div class="tc2" style="--tcb:rgba(251,191,36,.5);--tcg:rgba(251,191,36,.1);--td:.45s"><div class="tcl">☕</div><div class="tcn">Java</div></div>
-            <div class="tc2" style="--tcb:rgba(250,204,21,.5);--tcg:rgba(250,204,21,.1);--td:.6s"><div class="tcl" style="font-family:var(--fm);font-size:1.4rem;font-weight:700">JS</div><div class="tcn">JavaScript</div></div>
-            <div class="tc2" style="--tcb:rgba(167,139,250,.5);--tcg:rgba(167,139,250,.1);--td:.75s"><div class="tcl">🗂️</div><div class="tcn">Git</div></div>
-            <!-- Duplicate for seamless loop -->
-            <div class="tc2" style="--tcb:rgba(52,211,153,.5);--tcg:rgba(52,211,153,.1);--td:0s"><div class="tcl">🐍</div><div class="tcn">Python</div></div>
-            <div class="tc2" style="--tcb:rgba(0,229,255,.5);--tcg:rgba(0,229,255,.12);--td:.15s"><div class="tcl">🤗</div><div class="tcn">HuggingFace</div></div>
-            <div class="tc2" style="--tcb:rgba(239,68,68,.5);--tcg:rgba(239,68,68,.1);--td:.3s"><div class="tcl">🔥</div><div class="tcn">PyTorch</div></div>
-            <div class="tc2" style="--tcb:rgba(251,191,36,.5);--tcg:rgba(251,191,36,.1);--td:.45s"><div class="tcl">☕</div><div class="tcn">Java</div></div>
-            <div class="tc2" style="--tcb:rgba(250,204,21,.5);--tcg:rgba(250,204,21,.1);--td:.6s"><div class="tcl" style="font-family:var(--fm);font-size:1.4rem;font-weight:700">JS</div><div class="tcn">JavaScript</div></div>
-            <div class="tc2" style="--tcb:rgba(167,139,250,.5);--tcg:rgba(167,139,250,.1);--td:.75s"><div class="tcl">🗂️</div><div class="tcn">Git</div></div>
+          <div class="mq-row mq-left">
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">🐍</div><div class="tcn">Python</div></div>
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">🤗</div><div class="tcn">HuggingFace</div></div>
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">🔥</div><div class="tcn">PyTorch</div></div>
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">☕</div><div class="tcn">Java</div></div>
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">⚡</div><div class="tcn">LLM APIs</div></div>
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">🗂️</div><div class="tcn">Git</div></div>
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">🐍</div><div class="tcn">Python</div></div>
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">🤗</div><div class="tcn">HuggingFace</div></div>
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">🔥</div><div class="tcn">PyTorch</div></div>
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">☕</div><div class="tcn">Java</div></div>
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">⚡</div><div class="tcn">LLM APIs</div></div>
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">🗂️</div><div class="tcn">Git</div></div>
           </div>
         </div>
-
-        <!-- Marquee row 2 — scrolls right -->
-        <div class="mq-track" style="margin-top:12px">
-          <div class="mq-row mq-right" id="mq2">
-            <div class="tc2" style="--tcb:rgba(249,115,22,.5);--tcg:rgba(249,115,22,.1);--td:0s"><div class="tcl">🔥</div><div class="tcn">Firebase</div></div>
-            <div class="tc2" style="--tcb:rgba(239,68,68,.5);--tcg:rgba(239,68,68,.1);--td:.2s"><div class="tcl">🌐</div><div class="tcn">HTML5</div></div>
-            <div class="tc2" style="--tcb:rgba(96,165,250,.5);--tcg:rgba(96,165,250,.1);--td:.4s"><div class="tcl">🎨</div><div class="tcn">CSS3</div></div>
-            <div class="tc2" style="--tcb:rgba(52,211,153,.5);--tcg:rgba(52,211,153,.1);--td:.6s"><div class="tcl">☁️</div><div class="tcn">G Cloud</div></div>
-            <div class="tc2" style="--tcb:rgba(244,114,182,.5);--tcg:rgba(244,114,182,.1);--td:.8s"><div class="tcl">📊</div><div class="tcn">Pandas</div></div>
-            <div class="tc2" style="--tcb:rgba(156,163,175,.5);--tcg:rgba(156,163,175,.1);--td:1s"><div class="tcl">🐙</div><div class="tcn">GitHub</div></div>
-            <div class="tc2" style="--tcb:rgba(249,115,22,.5);--tcg:rgba(249,115,22,.1);--td:0s"><div class="tcl">🔥</div><div class="tcn">Firebase</div></div>
-            <div class="tc2" style="--tcb:rgba(239,68,68,.5);--tcg:rgba(239,68,68,.1);--td:.2s"><div class="tcl">🌐</div><div class="tcn">HTML5</div></div>
-            <div class="tc2" style="--tcb:rgba(96,165,250,.5);--tcg:rgba(96,165,250,.1);--td:.4s"><div class="tcl">🎨</div><div class="tcn">CSS3</div></div>
-            <div class="tc2" style="--tcb:rgba(52,211,153,.5);--tcg:rgba(52,211,153,.1);--td:.6s"><div class="tcl">☁️</div><div class="tcn">G Cloud</div></div>
-            <div class="tc2" style="--tcb:rgba(244,114,182,.5);--tcg:rgba(244,114,182,.1);--td:.8s"><div class="tcl">📊</div><div class="tcn">Pandas</div></div>
-            <div class="tc2" style="--tcb:rgba(156,163,175,.5);--tcg:rgba(156,163,175,.1);--td:1s"><div class="tcl">🐙</div><div class="tcn">GitHub</div></div>
+        <div class="mq-track">
+          <div class="mq-row mq-right">
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">🔥</div><div class="tcn">Firebase</div></div>
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">🌐</div><div class="tcn">HTML5</div></div>
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">🎨</div><div class="tcn">CSS3</div></div>
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">☁️</div><div class="tcn">GCP</div></div>
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">📊</div><div class="tcn">Pandas</div></div>
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">🧮</div><div class="tcn">NumPy</div></div>
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">🔥</div><div class="tcn">Firebase</div></div>
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">🌐</div><div class="tcn">HTML5</div></div>
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">🎨</div><div class="tcn">CSS3</div></div>
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">☁️</div><div class="tcn">GCP</div></div>
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">📊</div><div class="tcn">Pandas</div></div>
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">🧮</div><div class="tcn">NumPy</div></div>
           </div>
         </div>
-
-        <!-- Marquee row 3 — scrolls left (slower) -->
-        <div class="mq-track" style="margin-top:12px">
-          <div class="mq-row mq-left3" id="mq3">
-            <div class="tc2" style="--tcb:rgba(167,139,250,.5);--tcg:rgba(167,139,250,.1);--td:.1s"><div class="tcl">🗂️</div><div class="tcn">Git</div></div>
-            <div class="tc2" style="--tcb:rgba(251,191,36,.5);--tcg:rgba(251,191,36,.1);--td:.3s"><div class="tcl">⚡</div><div class="tcn">Streamlit</div></div>
-            <div class="tc2" style="--tcb:rgba(0,229,255,.5);--tcg:rgba(0,229,255,.12);--td:.5s"><div class="tcl">🧮</div><div class="tcn">NumPy</div></div>
-            <div class="tc2" style="--tcb:rgba(52,211,153,.5);--tcg:rgba(52,211,153,.1);--td:.7s"><div class="tcl">📡</div><div class="tcn">REST APIs</div></div>
-            <div class="tc2" style="--tcb:rgba(124,58,237,.5);--tcg:rgba(124,58,237,.1);--td:.9s"><div class="tcl">🧠</div><div class="tcn">FinBERT</div></div>
-            <div class="tc2" style="--tcb:rgba(244,114,182,.5);--tcg:rgba(244,114,182,.1);--td:1.1s"><div class="tcl">🔬</div><div class="tcn">NLP</div></div>
-            <div class="tc2" style="--tcb:rgba(167,139,250,.5);--tcg:rgba(167,139,250,.1);--td:.1s"><div class="tcl">🗂️</div><div class="tcn">Git</div></div>
-            <div class="tc2" style="--tcb:rgba(251,191,36,.5);--tcg:rgba(251,191,36,.1);--td:.3s"><div class="tcl">⚡</div><div class="tcn">Streamlit</div></div>
-            <div class="tc2" style="--tcb:rgba(0,229,255,.5);--tcg:rgba(0,229,255,.12);--td:.5s"><div class="tcl">🧮</div><div class="tcn">NumPy</div></div>
-            <div class="tc2" style="--tcb:rgba(52,211,153,.5);--tcg:rgba(52,211,153,.1);--td:.7s"><div class="tcl">📡</div><div class="tcn">REST APIs</div></div>
-            <div class="tc2" style="--tcb:rgba(124,58,237,.5);--tcg:rgba(124,58,237,.1);--td:.9s"><div class="tcl">🧠</div><div class="tcn">FinBERT</div></div>
-            <div class="tc2" style="--tcb:rgba(244,114,182,.5);--tcg:rgba(244,114,182,.1);--td:1.1s"><div class="tcl">🔬</div><div class="tcn">NLP</div></div>
+        <div class="mq-track">
+          <div class="mq-row mq-left3">
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">🧠</div><div class="tcn">FinBERT</div></div>
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">🔬</div><div class="tcn">NLP</div></div>
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">⚡</div><div class="tcn">Streamlit</div></div>
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">📡</div><div class="tcn">REST APIs</div></div>
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">🤖</div><div class="tcn">Agentic AI</div></div>
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">🕸️</div><div class="tcn">Scraping</div></div>
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">🧠</div><div class="tcn">FinBERT</div></div>
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">🔬</div><div class="tcn">NLP</div></div>
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">⚡</div><div class="tcn">Streamlit</div></div>
+            <div class="tc2" style="--tcb:rgba(92,107,41,.5)"><div class="tcl">📡</div><div class="tcn">REST APIs</div></div>
+            <div class="tc2" style="--tcb:rgba(196,93,37,.5)"><div class="tcl">🤖</div><div class="tcn">Agentic AI</div></div>
+            <div class="tc2" style="--tcb:rgba(82,107,88,.5)"><div class="tcl">🕸️</div><div class="tcn">Scraping</div></div>
           </div>
         </div>
       </div>
@@ -617,22 +240,42 @@
     <div class="tc rv">
       <div class="stag">Work</div>
       <h2 class="sh">Selected <em>Projects</em></h2>
-      <p class="ss">Real systems, real data, real impact. Each project is built end-to-end with production in mind.</p>
+      <p class="ss">Real systems, real data, real impact. Each project is built end-to-end with research and production in mind.</p>
     </div>
     <div class="pgrid">
-      <!-- EquiSense -->
+
+      <!-- Agentic Prompting Research -->
       <div class="pcard tilt rv sd" style="--i:0">
         <div class="pimg">
-          <img src="https://picsum.photos/seed/equisense-nlp/700/400" alt="EquiSense" loading="lazy"/>
+          <img src="confusion_matrices2.png" alt="Agentic Prompting Research" loading="lazy"/>
+          <div class="pov">
+            <a href="https://github.com/SoftSage07" target="_blank" class="ob obp">GitHub</a>
+          </div>
+        </div>
+        <div class="pbody">
+          <div class="pbadge">📄 Research Project</div>
+          <div class="ptags"><span class="ptag">LLM Evaluation</span><span class="ptag v">Chain-of-Thought</span><span class="ptag o">Groq · LLaMA 3.1</span></div>
+          <h3 class="ptitle">Agentic Prompting Research</h3>
+          <p class="pdesc">Built an agentic evaluation framework benchmarking 5 LLM prompting strategies on 300 labeled financial sentences. Improved sentiment classification accuracy from 62% to 89.67% using Chain-of-Thought prompting — a +27% gain. Identified neutral bias and refined using anchor prompting with automated, reproducible pipelines.</p>
+          <div class="plinks">
+            <a href="https://github.com/SoftSage07" target="_blank" class="plink"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>Source</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- EquiSense -->
+      <div class="pcard tilt rv sd" style="--i:1">
+        <div class="pimg">
+          <img src="Equisense-profile.png" alt="EquiSense" loading="lazy"/>
           <div class="pov">
             <a href="https://sentimenta-sa.streamlit.app/" target="_blank" class="ob obp">Live Demo</a>
             <a href="https://github.com/SoftSage07/EquiSense" target="_blank" class="ob obg">GitHub</a>
           </div>
         </div>
         <div class="pbody">
-          <div class="ptags"><span class="ptag">FinBERT</span><span class="ptag">NLP</span><span class="ptag">PyTorch</span><span class="ptag">Streamlit</span></div>
+          <div class="ptags"><span class="ptag">FinBERT</span><span class="ptag v">NLP Pipeline</span><span class="ptag o">Streamlit</span></div>
           <h3 class="ptitle">EquiSense</h3>
-          <p class="pdesc">End-to-end financial NLP pipeline using FinBERT for sentiment classification across 50+ real-time news articles. Features a custom Sentiment Reliability Index (SRI) for confidence-weighted signals, VIX-based market regime detection, and Gemini AI synthesis.</p>
+          <p class="pdesc">End-to-end financial NLP pipeline using FinBERT for real-time news sentiment classification. Features a custom Sentiment Reliability Index (SRI — score 67.9) combining source credibility, recency, and model confidence. Integrated VIX volatility, price trends, and REST APIs; deployed on Streamlit.</p>
           <div class="plinks">
             <a href="https://sentimenta-sa.streamlit.app/" target="_blank" class="plink"><svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>Live Demo</a>
             <a href="https://github.com/SoftSage07/EquiSense" target="_blank" class="plink"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>Source</a>
@@ -641,24 +284,26 @@
       </div>
 
       <!-- IncluiSphere -->
-      <div class="pcard tilt rv sd" style="--i:1">
+      <div class="pcard tilt rv sd" style="--i:2">
         <div class="pimg">
-          <img src="https://picsum.photos/seed/inclusive-edu/700/400" alt="IncluiSphere" loading="lazy"/>
+          <img src="Incluisphere-profile.png" alt="IncluiSphere" loading="lazy"/>
           <div class="pov">
             <a href="https://softsage07.github.io/HackwithMAIT" target="_blank" class="ob obp">Live Demo</a>
             <a href="https://github.com/softsage07/HackwithMAIT" target="_blank" class="ob obg">GitHub</a>
           </div>
         </div>
         <div class="pbody">
-          <div class="ptags"><span class="ptag">Firebase</span><span class="ptag">Full-Stack</span><span class="ptag">EdTech</span><span class="ptag">Real-Time DB</span></div>
+          <div class="pbadge">🏆 National Top 10 — HackwithMAIT 6.0</div>
+          <div class="ptags"><span class="ptag">Firebase</span><span class="ptag v">Full-Stack</span><span class="ptag o">EdTech</span></div>
           <h3 class="ptitle">IncluiSphere</h3>
-          <p class="pdesc">Community learning platform with Firebase authentication and real-time NoSQL database. Accessibility-first, responsive design. Ranked Top 10 nationally (top 1.7%) out of 581 teams at HackwithMAIT 6.0.</p>
+          <p class="pdesc">Accessible community learning platform with Firebase authentication and real-time NoSQL database. Ranked Top 10 nationally (top 1.7%) out of 581 teams at HackwithMAIT 6.0. Accessibility-first, responsive design. Shipped concept-to-deployment in under 24 hours.</p>
           <div class="plinks">
             <a href="https://softsage07.github.io/HackwithMAIT" target="_blank" class="plink"><svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>Live Site</a>
             <a href="https://github.com/softsage07/HackwithMAIT" target="_blank" class="plink"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>Source</a>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -671,12 +316,15 @@
       <h2 class="sh">Experience &amp; <em>Involvement</em></h2>
     </div>
     <div class="tline">
-      <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">Nov 2025 — Present</div><div class="tltitle">Tech & Event Management Coordinator</div><div class="tlorg">IEEE IGDTUW · Delhi</div><div class="tldesc">Managed technical execution of IEEE Open Source Week serving 100+ participants. Coordinated volunteer teams and structured technical workshops for the student engineering community.</div></div></div>
+      <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">2025 — Present</div><div class="tltitle">Open Source Contributor</div><div class="tlorg">GirlScript Summer of Code (GSSoC) & Social Summer of Code (SSoC) · Remote</div><div class="tldesc">Contributed to open source AI/ML and web projects across GSSoC and SSoC programs. Authored pull requests reviewed and merged by project maintainers across multiple repositories.</div></div></div>
+      <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">Nov 2025 — Present</div><div class="tltitle">Chapter Lead</div><div class="tlorg">Youth Economy Lab, IGDTUW · Delhi</div><div class="tldesc">Founded and led the IGDTUW chapter. Organized workshops at the intersection of technology, economics, and governance for the campus community.</div></div></div>
       <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">Nov 2025 — Present</div><div class="tltitle">Research Coordinator</div><div class="tlorg">E-Cell IGDTUW · Delhi</div><div class="tldesc">Researching emerging technology trends and startup ecosystems. Authoring weekly analytical newsletters for the university entrepreneurship community.</div></div></div>
-      <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">2024</div><div class="tltitle">HackWithMAIT 6.0 — National Hackathon</div><div class="tlorg">🏆 Top 10 of 581 Teams — Top 1.7% Nationally</div><div class="tldesc">Built IncluiSphere — a full-stack community learning platform with Firebase backend and real-time NoSQL database. Ranked Top 10 nationally across 581 competing teams.</div></div></div>
-      <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">2025</div><div class="tltitle">Harvard CS50P — Introduction to Python</div><div class="tlorg">Harvard University (via edX)</div><div class="tldesc">Completed Harvard's CS50P certification in Introduction to Programming with Python, covering algorithms, data structures, and programming problem-solving.</div></div></div>
+      <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">Nov 2025 — Present</div><div class="tltitle">Tech & Event Management Coordinator</div><div class="tlorg">IEEE IGDTUW · Delhi</div><div class="tldesc">Managed technical execution of IEEE Open Source Week serving 100+ participants. Coordinated volunteer teams and structured technical workshops for the student engineering community.</div></div></div>
+      <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">2024</div><div class="tltitle">HackWithMAIT 6.0 — National Hackathon</div><div class="tlorg">🏆 Top 10 of 581 Teams — Top 1.7% Nationally</div><div class="tldesc">Built IncluiSphere — a full-stack accessible community learning platform with Firebase backend and real-time NoSQL database. Shipped concept to deployment in under 24 hours.</div></div></div>
+      <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">2025</div><div class="tltitle">Harvard CS50P — Introduction to Python</div><div class="tlorg">Harvard University (via edX)</div><div class="tldesc">Completed Harvard's CS50P certification covering algorithms, data structures, and Python programming fundamentals.</div></div></div>
+      <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">2025</div><div class="tltitle">GDG on Campus — AI/ML & Gen AI Study Jams</div><div class="tlorg">Google Developer Groups · IGDTUW</div><div class="tldesc">Completed Machine Learning and Generative AI tracks with hands-on labs and project-based learning.</div></div></div>
       <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">2025</div><div class="tltitle">Google Cloud Study Jams</div><div class="tlorg">Google Developer Student Clubs</div><div class="tldesc">Completed Cloud Architecture and Machine Learning tracks with hands-on labs across core GCP services and cloud-native development patterns.</div></div></div>
-      <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">2025 — 2029</div><div class="tltitle">B.Tech — Electronics & Communication Engineering (AI)</div><div class="tlorg">IGDTUW · Delhi | CGPA: 8.14</div><div class="tldesc">Specialising in AI with coursework in Data Structures & Algorithms, OOP, Artificial Intelligence, and Machine Learning.</div></div></div>
+      <div class="tli rv"><div class="tldw"><div class="tld"></div></div><div class="tlc"><div class="tldate">2025 — 2029</div><div class="tltitle">B.Tech — Electronics & Communication Engineering (AI)</div><div class="tlorg">IGDTUW · Delhi | CGPA: 8.14/10</div><div class="tldesc">Specialising in AI with coursework in Data Structures & Algorithms, OOP, Artificial Intelligence, and Machine Learning.</div></div></div>
     </div>
   </div>
 </section>
@@ -690,9 +338,11 @@
     </div>
     <div class="achg">
       <div class="acard gd rv sd" style="--i:0"><span class="aico">🏆</span><div class="atit">Top 10 Nationally</div><div class="adesc">Ranked top 10 of 581 competing teams at HackWithMAIT 6.0. Shipped a full-stack platform from concept to deployment in under 24 hours.</div><span class="abdg">581 Teams · Top 1.7%</span></div>
-      <div class="acard cy rv sd" style="--i:1"><span class="aico">🎓</span><div class="atit">Harvard CS50P</div><div class="adesc">Completed Harvard University's Introduction to Programming with Python — one of the world's most rigorous intro CS certifications.</div><span class="abdg">Harvard University · 2025</span></div>
-      <div class="acard pu rv sd" style="--i:2"><span class="aico">☁️</span><div class="atit">Google Cloud Certified</div><div class="adesc">Completed Google Cloud Study Jams — Cloud Architecture and Machine Learning tracks with hands-on GCP lab work.</div><span class="abdg">Google · 2025</span></div>
-      <div class="acard cy rv sd" style="--i:3"><span class="aico">⚡</span><div class="atit">IEEE Coordinator</div><div class="adesc">Tech & Event Management Coordinator at IEEE IGDTUW. Managed Open Source Week for 100+ participants and coordinated technical workshops.</div><span class="abdg">IEEE IGDTUW · Nov 2025</span></div>
+      <div class="acard cy rv sd" style="--i:1"><span class="aico">🔬</span><div class="atit">89.67% Accuracy</div><div class="adesc">Improved LLM sentiment classification from 62% to 89.67% using Chain-of-Thought prompting strategies — a +27% accuracy gain on 300 labeled financial sentences.</div><span class="abdg">Agentic Prompting Research · 2025</span></div>
+      <div class="acard pu rv sd" style="--i:2"><span class="aico">🎓</span><div class="atit">Harvard CS50P</div><div class="adesc">Completed Harvard University's Introduction to Programming with Python — one of the world's most rigorous intro CS certifications.</div><span class="abdg">Harvard University · 2025</span></div>
+      <div class="acard cy rv sd" style="--i:3"><span class="aico">☁️</span><div class="atit">Google Cloud & GDG Certified</div><div class="adesc">Completed Cloud Architecture, Machine Learning, and Generative AI study jams with hands-on GCP labs and project work.</div><span class="abdg">Google · 2025</span></div>
+      <div class="acard gd rv sd" style="--i:4"><span class="aico">⚡</span><div class="atit">IEEE Coordinator</div><div class="adesc">Tech & Event Management Coordinator at IEEE IGDTUW. Managed Open Source Week for 100+ participants and led technical workshops.</div><span class="abdg">IEEE IGDTUW · Nov 2025</span></div>
+      <div class="acard pu rv sd" style="--i:5"><span class="aico">🌱</span><div class="atit">Open Source Contributor</div><div class="adesc">Active contributor to GSSoC and SSoC 2025 programs, with pull requests merged across AI/ML and web open source projects.</div><span class="abdg">GSSoC & SSoC · 2025</span></div>
     </div>
   </div>
 </section>
@@ -703,22 +353,22 @@
     <div class="tc rv">
       <div class="stag">Connect</div>
       <h2 class="sh">Let's <em>Build Together</em></h2>
-      <p class="ss">Open to research collaborations, internship opportunities, and conversations about NLP and AI systems.</p>
+      <p class="ss">Open to research collaborations, internship opportunities, and conversations about NLP, AI governance, and LLM systems.</p>
     </div>
     <div class="cgrid">
       <div class="cinfo rvl">
         <div class="cdet"><div class="cico">📍</div><div><div class="cll">Location</div><div class="clv">Delhi, India</div></div></div>
         <div class="cdet"><div class="cico">✉️</div><div><div class="cll">Email</div><div class="clv"><a href="mailto:harshprabha95@gmail.com">harshprabha95@gmail.com</a></div></div></div>
         <div class="cdet"><div class="cico">💻</div><div><div class="cll">GitHub</div><div class="clv"><a href="https://github.com/SoftSage07" target="_blank">@SoftSage07</a></div></div></div>
-        <div class="cdet"><div class="cico">🎓</div><div><div class="cll">Status</div><div class="clv" style="color:var(--cyan)">Seeking Research Opportunities</div></div></div>
+        <div class="cdet"><div class="cico">🔗</div><div><div class="cll">LinkedIn</div><div class="clv"><a href="https://www.linkedin.com/in/harshprabha-30b87b376/" target="_blank">in/harshprabha</a></div></div></div>
+        <div class="cdet"><div class="cico">🎓</div><div><div class="cll">Status</div><div class="clv">Seeking Research &amp; Internship Opportunities</div></div></div>
         <div class="csoc">
-          <a href="https://github.com/SoftSage07" target="_blank" class="sl"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
-          <a href="https://www.linkedin.com/in/harshprabha-30b87b376/" target="_blank" class="sl"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
-          <a href="mailto:harshprabha95@gmail.com" class="sl"><svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></a>
+          <a href="https://github.com/SoftSage07" target="_blank" class="sl"><svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a href="https://www.linkedin.com/in/harshprabha-30b87b376/" target="_blank" class="sl"><svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          <a href="mailto:harshprabha95@gmail.com" class="sl"><svg width="17" height="17" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></a>
         </div>
       </div>
 
-      <!-- CONTACT FORM — wired to EmailJS -->
       <div class="cform rvr">
         <div class="frow">
           <div class="fg"><label class="fl">First Name</label><input type="text" id="f_fname" class="fi" placeholder="Your first name"/></div>
@@ -736,190 +386,11 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="fbrand">Harshprabha<em>.</em>dev</div>
+  <div class="fbrand">Harshprabha<em>.</em></div>
   <div class="fcopy">© 2026 Harshprabha · IGDTUW · Delhi, India.</div>
   <div class="flinks"><a href="#home">Top ↑</a><a href="#projects">Projects</a><a href="#contact">Contact</a></div>
 </footer>
 
-<script>
-'use strict';
-
-/* ─── EMAILJS SETUP ───────────────────────────────────────────
-   ─────────────────────────────────────────────────────────── */
-const EMAILJS_PUBLIC_KEY  = '99nFurDyW1GS1oo1B';  
-const EMAILJS_SERVICE_ID  = 'service_uxevgnd';   
-const EMAILJS_TEMPLATE_ID = 'template_1b1ntdh'; 
-
-(function() {
-  if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
-    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-  }
-})();
-
-async function handleSend(btn) {
-  const fname   = document.getElementById('f_fname').value.trim();
-  const lname   = document.getElementById('f_lname').value.trim();
-  const email   = document.getElementById('f_email').value.trim();
-  const subject = document.getElementById('f_subject').value.trim();
-  const message = document.getElementById('f_message').value.trim();
-  const status  = document.getElementById('fstatus');
-
-  // Basic validation
-  if (!fname || !email || !message) {
-    status.textContent = '⚠ Please fill in your name, email, and message.';
-    status.className = 'fstatus err';
-    return;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    status.textContent = '⚠ Please enter a valid email address.';
-    status.className = 'fstatus err';
-    return;
-  }
-
-  // Check EmailJS is configured
-  if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
-    status.textContent = '⚠ Contact form not yet configured. Please email harshprabha95@gmail.com directly.';
-    status.className = 'fstatus err';
-    return;
-  }
-
-  btn.textContent = 'Sending...';
-  btn.disabled = true;
-  status.className = 'fstatus';
-
-  try {
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      from_name:  `${fname} ${lname}`.trim(),
-      from_email: email,
-      subject:    subject || 'Portfolio Contact',
-      message:    message,
-    });
-    status.textContent = '✓ Message sent! I\'ll get back to you soon.';
-    status.className = 'fstatus ok';
-    btn.textContent = '✓ Sent!';
-    // Clear fields
-    ['f_fname','f_lname','f_email','f_subject','f_message'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-    setTimeout(() => { btn.textContent = 'Send Message →'; btn.disabled = false; }, 4000);
-  } catch(err) {
-    console.error('EmailJS error:', err);
-    status.textContent = '✗ Something went wrong. Please email harshprabha95@gmail.com directly.';
-    status.className = 'fstatus err';
-    btn.textContent = 'Send Message →';
-    btn.disabled = false;
-  }
-}
-
-/* LOADER */
-window.addEventListener('load', () => setTimeout(() => document.getElementById('loader').classList.add('gone'), 2000));
-
-/* CURSOR */
-const ring = document.getElementById('cur-ring');
-const dot  = document.getElementById('cur-dot');
-let mx=0, my=0, rx=0, ry=0;
-document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
-(function raf(){ rx+=(mx-rx)*.11; ry+=(my-ry)*.11; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(raf); })();
-document.querySelectorAll('a,button,.tc2,.pcard,.acard,.sl,.atag,.skcp,.scard,.tlc').forEach(el=>{
-  el.addEventListener('mouseenter',()=>document.body.classList.add('ch'));
-  el.addEventListener('mouseleave',()=>document.body.classList.remove('ch'));
-});
-
-/* SCROLL PROGRESS */
-window.addEventListener('scroll',()=>{ document.getElementById('spb').style.transform=`scaleX(${window.scrollY/(document.body.scrollHeight-window.innerHeight)})`; },{passive:true});
-
-/* NAV GLASSMORPHISM */
-window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('stuck', window.scrollY>60),{passive:true});
-
-/* MOBILE MENU */
-function toggleMenu(){
-  document.getElementById('mmenu').classList.toggle('on');
-  document.getElementById('ham').classList.toggle('on');
-}
-
-/* TYPING */
-const phrases=['NLP Engineer','AI Systems Builder','Research-Oriented Developer','ML Pipeline Designer','ECE Student · IGDTUW'];
-let pi=0,ci=0,del=false;
-const te=document.getElementById('tout');
-function type(){
-  const c=phrases[pi];
-  te.textContent=del?c.slice(0,ci-1):c.slice(0,ci+1);
-  del?ci--:ci++;
-  if(!del&&ci===c.length){del=true;setTimeout(type,2400);return;}
-  if(del&&ci===0){del=false;pi=(pi+1)%phrases.length;setTimeout(type,420);return;}
-  setTimeout(type,del?42:72);
-}
-setTimeout(type,2600);
-
-/* SCROLL REVEAL */
-const ro=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vs'); }),{ threshold: 0.05, rootMargin: '0px 0px -60px 0px' });
-document.querySelectorAll('.rv,.rvl,.rvr').forEach(el=>ro.observe(el));
-
-/* ANIMATED COUNTERS */
-function easeOut(t){return 1-Math.pow(1-t,3);}
-function animCnt(el){
-  const tgt=+el.dataset.target, pre=el.dataset.prefix||'', suf=el.dataset.suffix||'';
-  const dur=1500, t0=performance.now();
-  (function tick(now){ const p=Math.min((now-t0)/dur,1); el.textContent=pre+Math.round(easeOut(p)*tgt)+suf; if(p<1)requestAnimationFrame(tick); })(t0);
-}
-const co=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.querySelectorAll('[data-target]').forEach(animCnt); co.unobserve(e.target); } }),{threshold:.3});
-document.querySelectorAll('.astats').forEach(el=>co.observe(el));
-
-/* 3D TILT */
-document.querySelectorAll('.tilt').forEach(c=>{
-  c.addEventListener('mousemove',e=>{
-    const r=c.getBoundingClientRect();
-    const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
-    c.style.transition='transform .1s ease,border-color .3s,box-shadow .4s';
-    c.style.transform=`perspective(900px) rotateY(${x*12}deg) rotateX(${-y*10}deg) scale3d(1.03,1.03,1.03)`;
-  });
-  c.addEventListener('mouseleave',()=>{
-    c.style.transition='transform .6s cubic-bezier(0.16,1,0.3,1),border-color .3s,box-shadow .4s';
-    c.style.transform='perspective(900px) rotateY(0deg) rotateX(0deg) scale3d(1,1,1)';
-  });
-});
-
-/* MAGNETIC BUTTONS */
-document.querySelectorAll('.magbtn').forEach(b=>{
-  b.addEventListener('mousemove',e=>{
-    const r=b.getBoundingClientRect();
-    b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.38}px,${(e.clientY-r.top-r.height/2)*.38}px) scale(1.05)`;
-    document.body.classList.add('cm');
-  });
-  b.addEventListener('mouseleave',()=>{ b.style.transform=''; document.body.classList.remove('cm'); });
-});
-
-/* PARALLAX HERO ORBS */
-let ticking=false;
-const oa=document.querySelector('.horb-a'), ob=document.querySelector('.horb-b');
-function doParallax(){ const y=window.scrollY; if(oa)oa.style.transform=`translateY(${y*.12}px)`; if(ob)ob.style.transform=`translateY(${-y*.08}px)`; ticking=false; }
-window.addEventListener('scroll',()=>{ if(!ticking){ requestAnimationFrame(doParallax); ticking=true; } },{passive:true});
-
-/* HERO CANVAS STARS */
-(function(){
-  const cv=document.getElementById('hcanvas');
-  if(!cv)return;
-  const ctx=cv.getContext('2d');
-  let W,H,stars=[],active=true;
-  function resize(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;}
-  function mk(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.2,a:Math.random(),s:(Math.random()-.5)*.002};}
-  function init(){resize();stars=Array.from({length:100},mk);}
-  function draw(){ if(!active){requestAnimationFrame(draw);return;} ctx.clearRect(0,0,W,H); stars.forEach(s=>{s.a+=s.s;if(s.a<=0||s.a>=1)s.s*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(0,229,255,${s.a*.55})`;ctx.fill();}); requestAnimationFrame(draw); }
-  window.addEventListener('scroll',()=>{ active=window.scrollY<window.innerHeight*1.2; },{passive:true});
-  window.addEventListener('resize',init);
-  init(); draw();
-})();
-
-/* FLOATING PARTICLES */
-const pc=document.getElementById('ptcl');
-function mkp(){ if(window.scrollY>window.innerHeight)return; const p=document.createElement('div'); p.className='ptcl'; const d=10+Math.random()*14,dl=Math.random()*8,sz=Math.random()<.25?3:1.5; p.style.cssText=`left:${Math.random()*100}vw;width:${sz}px;height:${sz}px;animation-duration:${d}s;animation-delay:${dl}s`; pc.appendChild(p); setTimeout(()=>p.remove(),(d+dl)*1000); }
-for(let i=0;i<20;i++)mkp();
-setInterval(mkp,1200);
-
-/* SMOOTH SCROLL */
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click',e=>{ const t=document.querySelector(a.getAttribute('href')); if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});} });
-});
-</script>
+<script src="script.js"></script>
 </body>
 </html>
